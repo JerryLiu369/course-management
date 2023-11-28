@@ -14,12 +14,12 @@ def index():
 
 @app.route('/abc')
 def bootswatch():
-    theme_list=['default', 'cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera', 'lumen', 'lux', 'materia', 'minty', 'morph', 'pulse', 'quartz', 'sandstone', 'simplex', 'sketchy', 'slate', 'solar', 'spacelab', 'superhero', 'united', 'vapor', 'yeti', 'zephyr']
+    theme_list=['cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera', 'lumen', 'lux', 'materia', 'minty', 'morph', 'pulse', 'quartz', 'sandstone', 'simplex', 'sketchy', 'slate', 'solar', 'spacelab', 'superhero', 'united', 'vapor', 'yeti', 'zephyr']
     theme_now=app.config['BOOTSTRAP_BOOTSWATCH_THEME']
     try:
         app.config['BOOTSTRAP_BOOTSWATCH_THEME']=theme_list[theme_list.index(theme_now)+1]
     except IndexError:
-        app.config['BOOTSTRAP_BOOTSWATCH_THEME']='default'
+        app.config['BOOTSTRAP_BOOTSWATCH_THEME']='cerulean'
     return redirect("/")
 
 if __name__ == '__main__':

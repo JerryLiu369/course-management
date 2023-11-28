@@ -1,4 +1,4 @@
-from flask import Flask, render_template,flash
+from flask import Flask, render_template,flash,redirect
 from flask_bootstrap import Bootstrap5
 
 app = Flask(__name__)
@@ -9,6 +9,7 @@ app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'default'
 
 @app.route('/')
 def index():
+    flash("主题："+app.config['BOOTSTRAP_BOOTSWATCH_THEME'])
     return render_template('layout.html')
 
 @app.route('/abc')
@@ -19,8 +20,7 @@ def bootswatch():
         app.config['BOOTSTRAP_BOOTSWATCH_THEME']=theme_list[theme_list.index(theme_now)+1]
     except IndexError:
         app.config['BOOTSTRAP_BOOTSWATCH_THEME']='default'
-    flash(app.config['BOOTSTRAP_BOOTSWATCH_THEME'])
-    return render_template('layout.html')
+    return redirect("/")
 
 if __name__ == '__main__':
     app.run(debug=True)

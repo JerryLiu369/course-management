@@ -4,7 +4,7 @@ from flask_bootstrap import Bootstrap5
 app = Flask(__name__)
 bootstrap = Bootstrap5(app)
 app.secret_key = 'your_secret_key'  # 设置一个安全密钥
-app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'default'
+app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'cerulean'
 
 
 @app.route('/')

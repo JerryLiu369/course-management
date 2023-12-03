@@ -63,25 +63,25 @@ def process_semester(semester_binary):
 
 class Major(db.Model):
     __tablename__ = 'Major'
-    Mid = db.Column('Mid', db.String(4), primary_key=True, doc='专业ID')
-    Mname = db.Column('Mname', db.String(40), doc='专业名')
+    Mid = db.Column('Mid', db.String(4), doc='专业ID')
+    Mname = db.Column('Mname', db.String(40), primary_key=True, doc='专业名')
     Mcollege = db.Column('Mcollege', db.String(20), doc='所属学院')
-    follows = db.relationship('MC', primaryjoin='Major.Mid==foreign(MC.Mid)')
+    follows = db.relationship('MC', primaryjoin='Major.Mname==foreign(MC.Mname)')
 
 
 class Course(db.Model):
     __tablename__ = 'Course'
-    Cname = db.Column('Cname', db.String(40), doc='课程名')
-    Cid = db.Column('Cid', db.String(15), primary_key=True, doc='课程ID')
+    Cname = db.Column('Cname', db.String(40),primary_key=True, doc='课程名')
+    Cid = db.Column('Cid', db.String(15), doc='课程ID')
     Ccredit = db.Column('Ccredit', db.SmallInteger, doc='课程学分')
     Csemester = db.Column('Csemester', db.BINARY(1), doc='开课学期')
-    follows = db.relationship('MC', primaryjoin='Course.Cid==foreign(MC.Cid)')
+    follows = db.relationship('MC', primaryjoin='Course.Cname==foreign(MC.Cname)')
 
 
 class MC(db.Model):
     __tablename__ = 'MC'
-    Mid = db.Column('Mid', db.String(4), db.ForeignKey('Major.Mid'), primary_key=True, index=True, doc='专业ID')
-    Cid = db.Column('Cid', db.String(15), db.ForeignKey('Course.Cid'), primary_key=True, index=True, doc='课程ID')
+    Mname = db.Column('Mname', db.String(40), db.ForeignKey('Major.Mname'), primary_key=True, index=True, doc='专业名')
+    Cname = db.Column('Cname', db.String(40), db.ForeignKey('Course.Cname'), primary_key=True, index=True, doc='课程名')
     MCcategory = db.Column('Mccategory', db.String(20), doc='课程类别')
     MCmodules = db.Column('MCmodules', db.String(20), doc='课程模块', nullable=True)
 

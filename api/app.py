@@ -74,7 +74,7 @@ class Course(db.Model):
     Cname = db.Column('Cname', db.String(40), doc='课程名')
     Cid = db.Column('Cid', db.String(15), primary_key=True, doc='课程ID')
     Ccredit = db.Column('Ccredit', db.SmallInteger, doc='课程学分')
-    Csemester = db.Column('Csemester', db.BINARY, doc='开课学期')
+    Csemester = db.Column('Csemester', db.BINARY(1), doc='开课学期')
     follows = db.relationship('MC', primaryjoin='Course.Cid==foreign(MC.Cid)')
 
 

@@ -1,0 +1,22 @@
+<!-- login.html -->
+<!doctype html>
+{% from 'bootstrap5/utils.html' import render_messages %}
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    {{ bootstrap.load_css() }}
+</head>
+<body>
+{{ render_messages(container=False, dismissible=True, dismiss_animate=True) }}
+<div class="container">
+    <h2>Login</h2>
+    <form method="post">
+        {{ form.hidden_tag() }}
+        {{ form.username.label }} {{ form.username() }}<br>
+        {{ form.password.label }} {{ form.password() }}<br>
+        {{ form.submit() }}
+    </form>
+</div>
+{{ bootstrap.load_js() }}
+</body>
+</html>

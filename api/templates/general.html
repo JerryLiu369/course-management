@@ -72,7 +72,7 @@
                     <td>{{ row[0] }}</td>
                     <td>{{ row[1] }}</td>
                     <td>{{ row[2] }}</td>
-                    <td>{{ row[3] | process_semester }}</td>
+                    <td>{{ row[3]| process_semester }}</td>
                     <td>{{ row[4] }}</td>
                 </tr>
                 {% endfor %}
@@ -160,6 +160,8 @@
             .then(data => {
                 console.log(data);
             });
+
+        window.location.reload();
     });
 
 </script>

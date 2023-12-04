@@ -52,8 +52,10 @@ def login():
 
 @app.template_filter()
 def process_semester(semester_binary):
+    # 将字节类型转换为二进制字符串
+    bin_str = ''.join(f'{byte:08b}' for byte in semester_binary)
     # semesters 是一个布尔值列表，表示每个学期是否开课
-    semesters = [bool(int(bit)) for bit in format(semester_binary, '08b')]
+    semesters = [bool(int(bit)) for bit in bin_str]
     semester_string = ""
     for i, offer in enumerate(semesters):
         if offer:

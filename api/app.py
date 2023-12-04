@@ -125,8 +125,8 @@ def process_selection():
     category = data['category']
     module = data['module']
     base_query = (db.session.query(Course.Cname, Course.Cid, Course.Ccredit, Course.Csemester, MC.MCmodules)
-                  .join(MC, Course.Cid == MC.Cid)
-                  .join(Major, MC.Mid == Major.Mid)
+                  .join(MC, Course.Cname == MC.Cname)
+                  .join(Major, MC.Mname == Major.Mname)
                   .filter(MC.MCcategory == category)
                   )
     # 动态添加过滤条件

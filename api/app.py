@@ -130,6 +130,7 @@ def process_selection():
                   .join(MC, Course.Cname == MC.Cname)
                   .join(Major, MC.Mname == Major.Mname)
                   .filter(MC.MCcategory == category)
+                  .distinct()
                   )
     # 动态添加过滤条件
     if major:

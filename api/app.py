@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap5
@@ -9,11 +11,12 @@ from flask_login import LoginManager, UserMixin, login_user, login_required
 app = Flask(__name__)
 app.secret_key = '8c083218c63f3a2b0f6b095295dddba0'  # 设置一个安全密钥
 app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'litera'
-app.config[
-    'SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://test_mysql:test2023MYSQL@rm-cn-9lb3i9qvj001pbjo.rwlb.rds.aliyuncs.com/test_mysql'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+    'SQLALCHEMY_DATABASE_URI',
+    'mysql+pymysql://test_mysql:test2023MYSQL@rm-cn-9lb3i9qvj001pbjo.rwlb.rds.aliyuncs.com/test_mysql'
+)
 bootstrap = Bootstrap5(app)
 db = SQLAlchemy(app)
-
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -27,7 +30,7 @@ class User(UserMixin, db.Model):
 
 @login_manager.user_loader
 def load_user(user_id):
-    return db.session.get(User,int(user_id))
+    return db.session.get(User, int(user_id))
 
 
 class LoginForm(FlaskForm):
@@ -73,7 +76,7 @@ class Major(db.Model):
 
 class Course(db.Model):
     __tablename__ = 'Course'
-    Cname = db.Column('Cname', db.String(40),primary_key=True, doc='课程名')
+    Cname = db.Column('Cname', db.String(40), primary_key=True, doc='课程名')
     Cid = db.Column('Cid', db.String(15), doc='课程ID')
     Ccredit = db.Column('Ccredit', db.SmallInteger, doc='课程学分')
     Csemester = db.Column('Csemester', db.BINARY(1), doc='开课学期')

@@ -1,4 +1,12 @@
 import os
+import secrets
+import string
+
+
+def generate_secure_string(length):
+    letters = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(letters) for _ in range(length))
+
 
 from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
@@ -9,7 +17,7 @@ from flask_wtf import FlaskForm
 from flask_login import LoginManager, UserMixin, login_user, login_required
 
 app = Flask(__name__)
-app.secret_key = '8c083218c63f3a2b0f6b095295dddba0'  # 设置一个安全密钥
+app.secret_key = generate_secure_string(30)
 app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'litera'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
     'SQLALCHEMY_DATABASE_URI',

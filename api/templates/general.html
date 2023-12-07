@@ -86,7 +86,8 @@
     var allmodules = {{ allmodules | tojson }};
 
     document.getElementById('major-select').addEventListener('change', function() {
-        this.remove(0);
+        if (this[0].value=='')
+            this.remove(0);
     });
 
     document.getElementById('module-select-one').addEventListener('change', function() {
@@ -108,7 +109,8 @@
             opt.innerHTML = category.name;
             selectTwo.appendChild(opt);
         });
-        this.remove(0);
+        if (this[0].value=='')
+            this.remove(0);
     });
 
     document.getElementById('module-select-two').addEventListener('change', function() {
@@ -131,11 +133,13 @@
             opt.innerHTML = module;
             selectThree.appendChild(opt);
         });
-        this.remove(0);
+        if (this[0].value=='')
+            this.remove(0);
     });
 
     document.getElementById('module-select-three').addEventListener('change', function() {
-        this.remove(0);
+        if (this[0].value=='')
+            this.remove(0);
     });
 
     document.getElementById('confirm-button').addEventListener('click', function() {

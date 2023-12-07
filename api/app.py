@@ -13,7 +13,7 @@ app.secret_key = '8c083218c63f3a2b0f6b095295dddba0'  # 设置一个安全密钥
 app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'litera'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
     'SQLALCHEMY_DATABASE_URI',
-    'mysql+pymysql://test_mysql:test2023MYSQL@rm-cn-9lb3i9qvj001pbjo.rwlb.rds.aliyuncs.com/test_mysql'
+    'sqlite:///db.db'
 )
 bootstrap = Bootstrap5(app)
 db = SQLAlchemy(app)

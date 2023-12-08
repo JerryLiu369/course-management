@@ -153,6 +153,11 @@ def process_selection():
     return "success"
 
 
+@app.route('/index')
+def next():
+    render_template("index.html")
+
+
 @app.route('/change_theme')
 def bootswatch():
     theme_list = ['cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera', 'lumen', 'lux', 'materia',

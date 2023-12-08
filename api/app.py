@@ -155,7 +155,7 @@ def process_selection():
 
 @app.route('/index')
 def next():
-    render_template("index.html")
+    return render_template("index.html")
 
 
 @app.route('/change_theme')

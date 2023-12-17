@@ -8,7 +8,7 @@ def generate_secure_string(length):
     return ''.join(secrets.choice(letters) for _ in range(length))
 
 
-from flask import Flask, render_template, flash, redirect, url_for, request
+from flask import Flask, render_template, flash, redirect, url_for, request,jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap5
 from wtforms import StringField, PasswordField, SubmitField
@@ -126,15 +126,24 @@ app.course_list = []
 @app.route('/')
 @login_required
 def index():
+    return redirect(url_for('general'))
+
+
+@app.route('/general')
+@login_required
+def general():
     return render_template('general.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
 
+@app.route('/major')
+@login_required
+def major():
+    return render_template('major.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
 
 @app.route('/process-selection', methods=['POST'])
 @login_required
 def process_selection():
     data = request.get_json()
-    major = data['major']
-    supercategory = data['supercategory']
+    major_input = data['major']
     category = data['category']
     module = data['module']
     base_query = (db.session.query(Course.Cname, Course.Cid, Course.Ccredit, Course.Csemester, MC.MCmodules)
@@ -144,31 +153,14 @@ def process_selection():
                   .distinct()
                   )
     # 动态添加过滤条件
-    if major:
-        base_query = base_query.filter(Major.Mname == major)
+    if major_input:
+        base_query = base_query.filter(Major.Mname == major_input)
     if module:
         base_query = base_query.filter(MC.MCmodules == module)
     # 执行查询
-    app.course_list = base_query.all()
-    return "success"
-
-
-@app.route('/index')
-def next():
-    return render_template("index.html")
-
-
-@app.route('/change_theme')
-def bootswatch():
-    theme_list = ['cerulean', 'cosmo', 'cyborg', 'darkly', 'flatly', 'journal', 'litera', 'lumen', 'lux', 'materia',
-                  'minty', 'morph', 'pulse', 'quartz', 'sandstone', 'simplex', 'sketchy', 'slate', 'solar', 'spacelab',
-                  'superhero', 'united', 'vapor', 'yeti', 'zephyr']
-    theme_now = app.config['BOOTSTRAP_BOOTSWATCH_THEME']
-    try:
-        app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = theme_list[theme_list.index(theme_now) + 1]
-    except IndexError:
-        app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'cerulean'
-    return redirect(url_for('index'))
+    result=base_query.all()
+    app.course_list = result
+    return jsonify(result)
 
 
 if __name__ == '__main__':

@@ -179,6 +179,70 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    var allmodules = {{ allmodules | tojson }} ;
+
+    document.getElementById('category1').addEventListener('change', function () {
+        var valueOne = this.value;
+        var modules = allmodules.find(cat => cat.name === "通识模块").categories.find(cat => cat.name === valueOne).modules;
+        var selectTwo = document.getElementById('category2');
+
+        // 清空当前的选项
+        selectTwo.innerHTML = '';
+
+        // 添加新的选项
+        var opt = document.createElement('option');
+        opt.value = '';
+        opt.innerHTML = '选择一个选项';
+        selectTwo.appendChild(opt);
+        modules.forEach(function (module) {
+            var opt = document.createElement('option');
+            opt.value = module;
+            opt.innerHTML = module;
+            selectTwo.appendChild(opt);
+        });
+        if (this[0].value == '')
+            this.remove(0);
+    });
+
+    document.getElementById('major').addEventListener('change', function () {
+        if (this[0].value == '')
+            this.remove(0);
+    });
+    document.getElementById('category1').addEventListener('change', function () {
+        if (this[0].value == '')
+            this.remove(0);
+    });
+    document.getElementById('category2').addEventListener('change', function () {
+        if (this[0].value == '')
+            this.remove(0);
+    });
+
+    document.getElementById('confirm-button').addEventListener('click', function () {
+        var valueMajor = document.getElementById('major').value;
+        var valueOne = document.getElementById('category1').value;
+        var valueTwo = document.getElementById('category2').value;
+        // 处理用户的选择
+        console.log("专业:", valueMajor, "||模块:", valueOne, valueTwo);
+        fetch('/process-selection', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                major: valueMajor,
+                category: valueOne,
+                module: valueTwo,
+            })
+        })
+            .then(data => {
+                console.log(data.json());
+            });
+
+        document.location.reload();
+    });
+
+</script>
 <script id="__NEXT_DATA__" type="application/json" crossorigin="">{
     "props": {
         "pageProps": {}

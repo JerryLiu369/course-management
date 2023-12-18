@@ -102,18 +102,28 @@ class MC(db.Model):
 ALLMODULES = [
     {'name': '通识模块',
      'categories': [
+         {'name': '专业实习', 'modules': []},
+         {'name': '专业核心课', 'modules': []},
+         {'name': '公共体育', 'modules': ['专项基础课', '核心基础课']},
+         {'name': '公共外语',
+          'modules': ['实验班', '实验班第二外语', '拓展类课程', '普通班A级', '普通班B级', '英语演讲']},
+         {'name': '军事课', 'modules': []},
+         {'name': '劳动教育', 'modules': []},
+         {'name': '志愿服务', 'modules': []},
          {'name': '思想政治理论课', 'modules': ['必修模块', '选修模块']},
-         {'name': '公共外语', 'modules': ['普通班A级', '普通班B级', '实验班', '拓展类课程', '实验班第二外语']},
-         {'name': '公共体育', 'modules': ['核心基础课', '专项基础课']},
-         {'name': '通识课程群', 'modules': ['新生研讨课', '公共艺术教育', '心理健康教育必修', '心理健康教育选修']}
+         {'name': '毕业论文（设计）', 'modules': []},
+         {'name': '研究训练', 'modules': []},
+         {'name': '职业生涯规划', 'modules': []},
+         {'name': '通识课程群', 'modules': ['公共艺术教育', '心理健康教育选修', '新生研讨课']},
      ]
      },
     {'name': '专业模块',
      'categories': [
-         {'name': '思想政治理论课', 'modules': ['必修模块', '选修模块']},
-         {'name': '公共外语', 'modules': ['普通班A级', '普通班B级', '实验班', '拓展类课程', '实验班第二外语']},
-         {'name': '公共体育', 'modules': ['核心基础课', '专项基础课']},
-         {'name': '通识课程群', 'modules': ['新生研讨课', '公共艺术教育', '心理健康教育必修', '心理健康教育选修']}
+         {'name': '部类核心课', 'modules': ['部类共同课', '部类基础课']},
+         {'name': '个性化选修',
+          'modules': ['人工智能', '信息安全应用', '信息安全技术', '信息管理理论基础', '信息系统技术基础',
+                      '复杂工程实践', '多媒体技术', '大数据技术', '电子商务创新应用', '系统与网络', '计算机理论基础',
+                      '计算机类专业实践', '软件工程与系统开发', '金融科技创新应用']}
      ]
      }
 ]
@@ -139,6 +149,10 @@ def general():
 def major():
     return render_template('major.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
 
+@app.route('/calculate')
+@login_required
+def calculate():
+    return render_template('calculate.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
 @app.route('/process-selection', methods=['POST'])
 @login_required
 def process_selection():

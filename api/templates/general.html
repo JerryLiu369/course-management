@@ -181,7 +181,7 @@
 
     document.getElementById('category1').addEventListener('change', function () {
         var valueOne = this.value;
-        var modules = allmodules.find(cat => cat.name === "专业模块").categories.find(cat => cat.name === valueOne).modules;
+        var modules = allmodules.find(cat => cat.name === "通识模块").categories.find(cat => cat.name === valueOne).modules;
         var selectTwo = document.getElementById('category2');
 
         // 清空当前的选项

@@ -195,7 +195,7 @@
         var opt = document.createElement('option');
         opt.value = '';
         opt.innerHTML = '选择一个选项';
-        selectTwo.appendChild(opt);
+        if(modules.length>0) selectTwo.appendChild(opt);
         modules.forEach(function (module) {
             var opt = document.createElement('option');
             opt.value = module;

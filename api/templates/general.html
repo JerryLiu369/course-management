@@ -125,7 +125,7 @@
                 <div class="flex items-center mb-4"><label class="mr-2">模块：</label><select
                         class="border rounded px-2 py-1 mr-4" id="category1">
                     <option value="">选择一个选项</option>
-                    {% for category in allmodules[0]['categories'] %}
+                    {% for category in allmodules[1]['categories'] %}
                     <option value="{{category.name}}">{{category.name}}</option>
                     {% endfor %}
                 </select><select class="border rounded px-2 py-1 mr-4" id="category2">
@@ -181,7 +181,7 @@
 
     document.getElementById('category1').addEventListener('change', function () {
         var valueOne = this.value;
-        var modules = allmodules.find(cat => cat.name === "通识模块").categories.find(cat => cat.name === valueOne).modules;
+        var modules = allmodules.find(cat => cat.name === "专业模块").categories.find(cat => cat.name === valueOne).modules;
         var selectTwo = document.getElementById('category2');
 
         // 清空当前的选项

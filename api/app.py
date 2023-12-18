@@ -19,10 +19,8 @@ def generate_secure_string(length):
 app = Flask(__name__)
 app.secret_key = generate_secure_string(30)
 app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'litera'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-    'SQLALCHEMY_DATABASE_URI',
-    'sqlite:///db.db'
-)
+with open(".env","r") as f:
+    app.config['SQLALCHEMY_DATABASE_URI'] = f.read().strip("\n")
 bootstrap = Bootstrap5(app)
 db = SQLAlchemy(app)
 login_manager = LoginManager()

@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="../static/_next/static/css/f6fb3ae35ce38808.css" crossorigin="" data-n-p=""/>
     <style>
         .large-checkbox {
-            width: 15px;  /* 或其他期望的大小 */
-            height: 15px; /* 或其他期望的大小 */
+            width: 18px;  /* 或其他期望的大小 */
+            height: 18px; /* 或其他期望的大小 */
         }
     </style>
     <noscript data-n-css=""></noscript>
@@ -137,10 +137,10 @@
                                                                    id="category1">
                     <option value="">选择一个选项</option>
                     {% for category in allmodules[0]['categories'] %}
-                    <option value="{{category.name}}-g">{{category.name}}</option>
+                    <option value="{{category.name}}" catatype=0>{{category.name}}</option>
                     {% endfor %}
                     {% for category in allmodules[1]['categories'] %}
-                    <option value="{{category.name}}-m">{{category.name}}</option>
+                    <option value="{{category.name}}" catatype=1>{{category.name}}</option>
                     {% endfor %}
                 </select><select class="border rounded px-2 py-1 mr-4" id="category2">
                 </select>
@@ -176,11 +176,11 @@
                             </thead>
                             <tbody class="[&amp;_tr:last-child]:border-0">
                             {% for row in data %}
-                            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted" data-status="unchecked">
+                            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                                 <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-                                    <input class="form-check-input large-checkbox checkbox-class" type="checkbox">
+                                    <input class="form-check-input large-checkbox checkbox-class" type="checkbox" data-status="unchecked">
                                 </td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{ row[0] }}</td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0" value="{{ row[0] }}">{{ row[0] }}</td>
                                 <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{ row[1] }}</td>
                                 <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{ row[2] }}</td>
                                 <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{ row[3]| process_semester }} </td>
@@ -192,10 +192,11 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-9 rounded-md px-3 bg-black text-white">
+                    <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-9 rounded-md px-3 bg-black text-white"
+                    id="calculate-button">
                         计算学分
                     </button>
-                    <span class="text-black">学分结果: 0</span></div>
+                    <span class="text-black">学分结果: <a id="score-result">0</a></span></div>
             </main>
         </div>
     </div>
@@ -205,9 +206,7 @@
 
     document.getElementById('category1').addEventListener('change', function () {
         var valueOne = this.value;
-        var catetype="通识模块"
-        if(valueOne.find("-g")==-1)catetype="专业模块"
-        var modules = allmodules.find(cat => cat.name === catetype).categories.find(cat => cat.name === valueOne).modules;
+        var modules = allmodules[this.options[this.selectedIndex].getAttribute('catatype')].categories.find(cat => cat.name === valueOne).modules;
         var selectTwo = document.getElementById('category2');
 
         // 清空当前的选项
@@ -259,21 +258,6 @@
     });
 
     function handleCheckboxChange(checkbox) {
-        // 获取复选框的父级 td 元素
-        var tdElement = checkbox.parentElement;
-
-        // 获取 td 元素的父级 tr 元素
-        var trElement = tdElement.parentElement;
-
-        // 根据复选框的状态更改 tr 的 data-status 属性
-        if(checkbox.checked) {
-            trElement.setAttribute('data-status', 'checked');
-        } else {
-            trElement.setAttribute('data-status', 'unchecked');
-        }
-    }
-
-    function handleCheckboxChange_all(checkbox) {
         if(checkbox.checked) {
             checkbox.setAttribute('data-status', 'checked');
         } else {
@@ -281,16 +265,33 @@
         }
     }
 
-    document.querySelectorAll('.checkbox-class-all').forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            handleCheckboxChange_all(this);
+    // 获取 tbody 中所有的 checkbox
+    var checkboxes = document.querySelectorAll('tbody .form-check-input');
+
+    document.getElementById('select-all').addEventListener('change', function(){
+        // 遍历并更新其它 checkbox 的状态
+        checkboxes.forEach(function(checkbox) {
+            if(checkbox.checked != document.getElementById('select-all').checked)checkbox.click();
         });
+        handleCheckboxChange(this);
     });
 
     document.querySelectorAll('.checkbox-class').forEach(function(checkbox) {
         checkbox.addEventListener('change', function() {
             handleCheckboxChange(this);
         });
+    });
+
+    document.getElementById('calculate-button').addEventListener('click', function () {
+        var scores=0;
+        var rows = document.querySelectorAll('tbody tr');
+        rows.forEach(function(row){
+            // 获取tr中的所有td元素
+            var cells = row.querySelectorAll('td');
+            if (cells[0].querySelector("input").checked) scores+= parseInt(cells[3].innerText,10);
+            }
+        )
+        document.getElementById("score-result").innerText=scores.toString();
     });
 </script>
 <script id="__NEXT_DATA__" type="application/json" crossorigin="">{

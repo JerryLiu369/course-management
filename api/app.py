@@ -129,6 +129,7 @@ ALLMODULES = [
 MAJORS = ["计算机科学与技术", "信息管理与信息系统", "信息安全", "软件工程", "数据科学与大数据技术（工学）"]
 
 app.course_list = []
+app.score=0
 
 
 @app.route('/')
@@ -152,7 +153,7 @@ def major():
 @app.route('/calculate')
 @login_required
 def calculate():
-	return render_template('calculate.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
+	return render_template('calculate.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list,score=app.score)
 
 
 @app.route('/add')
@@ -190,7 +191,38 @@ def process_selection():
 	return "success"
 
 
+@app.route('/calculate-credits', methods=['POST'])
+@login_required
+def calculate_credits():
+	data = request.get_json()
+	# 读入专业，所选模块，以及选中模块内的课程
+	major = data['major']
+	module = data['module']
+	category = data['category']  # 类别列表，可能有多个列表
+	selected_courses = data['courses']  # 课程列表，可能有多个课程
+
+
+	base_query = (db.session.query(Course.Cname, Course.Ccredit)
+	              .join(MC, Course.Cname == MC.Cname)
+	              .join(Major, MC.Mname == Major.Mname)
+	              .filter(MC.MCcategory == category)
+	              .filter(Major.Mname == major)
+	              .filter(MC.MCmodules == module)
+	              .distinct()
+	              )
+
+	# 过滤出选择的课程
+	base_query = base_query.filter(Course.Cname.in_(selected_courses))
+
+	# 执行查询，获取课程和对应的学分
+	course_credits = base_query.all()
+
+	# 计算学分总和
+	total_credits = sum(credit for _, credit in course_credits)
+
+	return str(total_credits)
+
 if __name__ == '__main__':
 	with app.app_context():
 		db.create_all()
-	app.run(host="0.0.0.0")
+	app.run(debug=True,host="0.0.0.0")

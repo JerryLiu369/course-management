@@ -155,6 +155,18 @@ def calculate():
 	return render_template('calculate.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
 
 
+@app.route('/add')
+@login_required
+def add():
+	return render_template('add.html')
+
+
+@app.route('/minus')
+@login_required
+def minus():
+	return render_template('minus.html')
+
+
 @app.route('/process-selection', methods=['POST'])
 @login_required
 def process_selection():

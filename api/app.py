@@ -2,19 +2,19 @@ import os
 import secrets
 import string
 
-
-def generate_secure_string(length):
-    letters = string.ascii_letters + string.digits
-    return ''.join(secrets.choice(letters) for _ in range(length))
-
-
-from flask import Flask, render_template, flash, redirect, url_for, request,jsonify
+from flask import Flask, render_template, flash, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap5
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired
 from flask_wtf import FlaskForm
 from flask_login import LoginManager, UserMixin, login_user, login_required
+
+
+def generate_secure_string(length):
+    letters = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(letters) for _ in range(length))
+
 
 app = Flask(__name__)
 app.secret_key = generate_secure_string(30)
@@ -103,7 +103,6 @@ ALLMODULES = [
     {'name': '通识模块',
      'categories': [
          {'name': '专业实习', 'modules': []},
-         {'name': '专业核心课', 'modules': []},
          {'name': '公共体育', 'modules': ['专项基础课', '核心基础课']},
          {'name': '公共外语',
           'modules': ['实验班', '实验班第二外语', '拓展类课程', '普通班A级', '普通班B级', '英语演讲']},
@@ -114,12 +113,13 @@ ALLMODULES = [
          {'name': '毕业论文（设计）', 'modules': []},
          {'name': '研究训练', 'modules': []},
          {'name': '职业生涯规划', 'modules': []},
-         {'name': '通识课程群', 'modules': ['公共艺术教育', '心理健康教育选修', '新生研讨课']},
+         {'name': '通识课程群', 'modules': ['公共艺术教育', '心理健康教育选修', '新生研讨课']}
      ]
      },
     {'name': '专业模块',
      'categories': [
          {'name': '部类核心课', 'modules': ['部类共同课', '部类基础课']},
+         {'name': '专业核心课', 'modules': []},
          {'name': '个性化选修',
           'modules': ['人工智能', '信息安全应用', '信息安全技术', '信息管理理论基础', '信息系统技术基础',
                       '复杂工程实践', '多媒体技术', '大数据技术', '电子商务创新应用', '系统与网络', '计算机理论基础',
@@ -144,15 +144,19 @@ def index():
 def general():
     return render_template('general.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
 
+
 @app.route('/major')
 @login_required
 def major():
     return render_template('major.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
 
+
 @app.route('/calculate')
 @login_required
 def calculate():
     return render_template('calculate.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
+
+
 @app.route('/process-selection', methods=['POST'])
 @login_required
 def process_selection():
@@ -172,12 +176,11 @@ def process_selection():
     if module:
         base_query = base_query.filter(MC.MCmodules == module)
     # 执行查询
-    result=base_query.all()
-    app.course_list = result
-    return jsonify(result)
+    app.course_list = base_query.all()
+    return "success"
 
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True,host="0.0.0.0")
+    app.run(host="0.0.0.0")

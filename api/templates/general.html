@@ -163,9 +163,7 @@
                                 <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{ row[0] }}</td>
                                 <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{ row[1] }}</td>
                                 <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{ row[2] }}</td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{ row[3]|
-                                    process_semester }}
-                                </td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{ row[3]| process_semester }} </td>
                                 <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{ row[4] }}</td>
                             </tr>
                             {% endfor %}
@@ -218,8 +216,7 @@
         //var valueMajor = document.getElementById('major').value;
         var valueOne = document.getElementById('category1').value;
         var valueTwo = document.getElementById('category2').value;
-        // 处理用户的选择
-        console.log("专业:", valueMajor, "||模块:", valueOne, valueTwo);
+
         fetch('/process-selection', {
             method: 'POST',
             headers: {
@@ -230,12 +227,10 @@
                 category: valueOne,
                 module: valueTwo,
             })
-        })
-            .then(data => {
-                console.log(data.json());
-            });
-
-        window.location.reload();
+        }).then(data => {
+            window.location.reload();  // 然后重载页面
+            console.log("专业:", valueMajor, "||模块:", valueOne, valueTwo);
+        });
     });
 
 </script>

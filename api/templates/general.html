@@ -125,7 +125,7 @@
                 <div class="flex items-center mb-4"><label class="mr-2">模块：</label><select
                         class="border rounded px-2 py-1 mr-4" id="category1">
                     <option value="">选择一个选项</option>
-                    {% for category in allmodules[1]['categories'] %}
+                    {% for category in allmodules[0]['categories'] %}
                     <option value="{{category.name}}">{{category.name}}</option>
                     {% endfor %}
                 </select><select class="border rounded px-2 py-1 mr-4" id="category2">

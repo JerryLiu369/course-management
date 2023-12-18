@@ -6,6 +6,12 @@
     <meta name="next-head-count" content="2"/>
     <link rel="preload" href="../static/_next/static/css/f6fb3ae35ce38808.css" as="style" crossorigin=""/>
     <link rel="stylesheet" href="../static/_next/static/css/f6fb3ae35ce38808.css" crossorigin="" data-n-p=""/>
+    <style>
+        .large-checkbox {
+            width: 15px;  /* 或其他期望的大小 */
+            height: 15px; /* 或其他期望的大小 */
+        }
+    </style>
     <noscript data-n-css=""></noscript>
     <script defer="" crossorigin="" nomodule="" src="../static/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js"></script>
     <script src="../static/_next/static/chunks/webpack-2a87ebd0c1789c14.js" defer="" crossorigin=""></script>
@@ -146,7 +152,7 @@
                             <thead class="[&amp;_tr]:border-b">
                             <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                                 <th class="p-4 align-middle">
-                                    <input class="form-check-input" type="checkbox" id="select">
+                                    <input class="form-check-input large-checkbox checkbox-class-all" type="checkbox" id="select-all" data-status="unchecked">
                                 </th>
                                 <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0">
                                     课程名称
@@ -166,51 +172,18 @@
                             </tr>
                             </thead>
                             <tbody class="[&amp;_tr:last-child]:border-0">
-                            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                            {% for row in data %}
+                            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted" data-status="unchecked">
                                 <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-                                    <button type="button" role="checkbox" aria-checked="false" data-state="unchecked"
-                                            value="on"
-                                            class="peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
-                                            id="select-1"></button>
-                                    <input type="checkbox" aria-hidden="true"
-                                           style="transform:translateX(-100%);position:absolute;pointer-events:none;opacity:0;margin:0"
-                                           tabindex="-1" value="on"/></td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">数据结构</td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">Jane Doe</td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">周一 10:00 - 12:00</td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">105室</td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">Remark</td>
+                                    <input class="form-check-input large-checkbox checkbox-class" type="checkbox">
+                                </td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{ row[0] }}</td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{ row[1] }}</td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{ row[2] }}</td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{ row[3]| process_semester }} </td>
+                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{ row[4] }}</td>
                             </tr>
-                            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-                                    <button type="button" role="checkbox" aria-checked="false" data-state="unchecked"
-                                            value="on"
-                                            class="peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
-                                            id="select-2"></button>
-                                    <input type="checkbox" aria-hidden="true"
-                                           style="transform:translateX(-100%);position:absolute;pointer-events:none;opacity:0;margin:0"
-                                           tabindex="-1" value="on"/></td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">微积分</td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">John Smith</td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">周二 13:00 - 15:00</td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">206室</td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">Remark</td>
-                            </tr>
-                            <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-                                    <button type="button" role="checkbox" aria-checked="false" data-state="unchecked"
-                                            value="on"
-                                            class="peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
-                                            id="select-3"></button>
-                                    <input type="checkbox" aria-hidden="true"
-                                           style="transform:translateX(-100%);position:absolute;pointer-events:none;opacity:0;margin:0"
-                                           tabindex="-1" value="on"/></td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">英国文学</td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">Emma Brown</td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">周三 09:00 - 11:00</td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">307室</td>
-                                <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">Remark</td>
-                            </tr>
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -277,6 +250,41 @@
         }).then(data => {
             window.location.reload();  // 然后重载页面
             console.log("专业:", valueMajor, "||模块:", valueOne, valueTwo);
+        });
+    });
+
+    function handleCheckboxChange(checkbox) {
+        // 获取复选框的父级 td 元素
+        var tdElement = checkbox.parentElement;
+
+        // 获取 td 元素的父级 tr 元素
+        var trElement = tdElement.parentElement;
+
+        // 根据复选框的状态更改 tr 的 data-status 属性
+        if(checkbox.checked) {
+            trElement.setAttribute('data-status', 'checked');
+        } else {
+            trElement.setAttribute('data-status', 'unchecked');
+        }
+    }
+
+    function handleCheckboxChange_all(checkbox) {
+        if(checkbox.checked) {
+            checkbox.setAttribute('data-status', 'checked');
+        } else {
+            checkbox.setAttribute('data-status', 'unchecked');
+        }
+    }
+
+    document.querySelectorAll('.checkbox-class-all').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            handleCheckboxChange_all(this);
+        });
+    });
+
+    document.querySelectorAll('.checkbox-class').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            handleCheckboxChange(this);
         });
     });
 </script>

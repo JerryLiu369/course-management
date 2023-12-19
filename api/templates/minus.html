@@ -95,9 +95,9 @@
             <main class="flex flex-col gap-4 mt-0">
                 <div class="flex items-center space-x-2"><label
                         class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-20 text-right"
-                        for="info">专业：（仅专业课程选择）</label><select
+                        for="info">专业</label><select
                         class="border rounded px-2 py-1 mr-4" id="info">
-                    <option value="">不选择专业</option>
+                    <option value="">不选择专业（通识课程）</option>
                     {% for major in majors %}
                     <option value="{{major}}">{{major}}</option>
                     {% endfor %}

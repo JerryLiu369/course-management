@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% from 'bootstrap5/utils.html' import render_messages %}
 <html>
 <head>
     <meta charSet="utf-8"/>
@@ -16,6 +17,7 @@
     <script src="../static/_next/static/1zzyugYDExpvqP4ahtYCX/_ssgManifest.js" defer="" crossorigin=""></script>
 </head>
 <body>
+{{ render_messages(container=False, dismissible=True, dismiss_animate=True) }}
 <div id="__next">
     <div class="grid min-h-screen w-full grid-cols-[280px_1fr]">
         <nav class="hidden border-r bg-gray-100/40 lg:block dark:bg-gray-800/40">
@@ -121,13 +123,42 @@
                         for="info5">模块小类</label><input
                         class="flex h-10 w-full border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 rounded-md"
                         id="info5" placeholder=""/></div>
-                <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 self-start w-auto px-2 py-2 bg-black text-white rounded">
+                <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 self-start w-auto px-2 py-2 bg-black text-white rounded"
+                        id="confirm-button">
                     提交
                 </button>
             </main>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    document.getElementById('confirm-button').addEventListener('click', function () {
+        var info = document.getElementById("info");
+        var info1 = document.getElementById("info1");
+        var info2 = document.getElementById("info2");
+        var info3 = document.getElementById("info3");
+        var info4 = document.getElementById("info4");
+        var info5 = document.getElementById("info5");
+
+        fetch('/delete_data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                Mname:info,
+                Cname:info1,
+                Cid:info2,
+                Mccategory:info3,
+                Ccredit:info4,
+                MCmodules:info5
+            })
+        }).then(data => {
+            console.log(data.json());
+            window.location.reload();
+        });
+    });
+</script>
 <script id="__NEXT_DATA__" type="application/json" crossorigin="">{
     "props": {
         "pageProps": {}

@@ -2,13 +2,14 @@ import os
 import secrets
 import string
 
-from flask import Flask, render_template, flash, redirect, url_for, request
+from flask import Flask, render_template, flash, redirect, url_for, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap5
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired
 from flask_wtf import FlaskForm
 from flask_login import LoginManager, UserMixin, login_user, login_required
+import pymysql
 
 
 def generate_secure_string(length):
@@ -129,7 +130,6 @@ ALLMODULES = [
 MAJORS = ["计算机科学与技术", "信息管理与信息系统", "信息安全", "软件工程", "数据科学与大数据技术（工学）"]
 
 app.course_list = []
-app.score=0
 
 
 @app.route('/')
@@ -153,7 +153,7 @@ def major():
 @app.route('/calculate')
 @login_required
 def calculate():
-	return render_template('calculate.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list,score=app.score)
+	return render_template('calculate.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
 
 
 @app.route('/add')
@@ -201,7 +201,6 @@ def calculate_credits():
 	category = data['category']  # 类别列表，可能有多个列表
 	selected_courses = data['courses']  # 课程列表，可能有多个课程
 
-
 	base_query = (db.session.query(Course.Cname, Course.Ccredit)
 	              .join(MC, Course.Cname == MC.Cname)
 	              .join(Major, MC.Mname == Major.Mname)
@@ -222,7 +221,124 @@ def calculate_credits():
 
 	return str(total_credits)
 
+
+def insert_course_data(major_name, course_name, course_id, category, credit, modules):
+	connection = pymysql.connect(
+		host='your_database_host',
+		user='your_database_user',
+		password='your_database_password',
+		db='your_database_name',
+		charset='utf8mb4',
+		cursorclass=pymysql.cursors.DictCursor
+	)
+
+	try:
+		with connection.cursor() as cursor:
+			# 尝试插入 Course 表
+			course_sql = "INSERT INTO Course (Cname, Cid, Ccredit) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE Cid=Cid;"
+			cursor.execute(course_sql, (course_name, course_id, credit))
+
+			# 尝试插入 MC 表
+			if major_name:
+				# 如果专业名称不为空，只插入一条记录
+				mc_sql = "INSERT INTO MC (Mname, Cname, MCcategory, MCmodules) VALUES (%s, %s, %s, %s);"
+				cursor.execute(mc_sql, (major_name, course_name, category, modules))
+			else:
+				# 如果专业名称为空，为每个专业插入相同的记录
+				get_majors_sql = "SELECT Mname FROM Major;"
+				cursor.execute(get_majors_sql)
+				majors = cursor.fetchall()
+
+				mc_sql = "INSERT INTO MC (Mname, Cname, MCcategory, MCmodules) VALUES (%s, %s, %s, %s);"
+				for major in majors:
+					cursor.execute(mc_sql, (major['Mname'], course_name, category, modules))
+
+			connection.commit()
+	except pymysql.Error as e:
+		error_message = f"Error: {e}"
+		return jsonify({'status': 'error', 'message': error_message})
+	finally:
+		connection.close()
+
+	flash("增加已完成")
+
+	return jsonify({'status': 'success', 'message': 'Data inserted successfully'})
+
+
+@app.route('/insert_data', methods=['POST'])
+def insert_data():
+	data = request.get_json()
+	major_name = data.get('Mname', None)
+	course_name = data.get('Cname', None)
+	course_id = data.get('Cid', None)
+	category = data.get('MCcategory', None)
+	credit = data.get('Ccredit', None)
+	modules = data.get('MCmodules', None)
+
+	if not (course_name and course_id and category and credit and modules):
+		return jsonify({'status': 'error', 'message': 'Missing required data'})
+
+	return insert_course_data(major_name, course_name, course_id, category, credit, modules)
+
+
+def delete_course_data(major_name, course_name, course_id, category, credit, modules):
+	connection = pymysql.connect(
+		host='your_database_host',
+		user='your_database_user',
+		password='your_database_password',
+		db='your_database_name',
+		charset='utf8mb4',
+		cursorclass=pymysql.cursors.DictCursor
+	)
+
+	try:
+		with connection.cursor() as cursor:
+			# 删除 MC 表中的记录
+			if major_name:
+				mc_sql = "DELETE FROM MC WHERE Mname=%s AND Cname=%s AND MCcategory=%s AND MCmodules=%s;"
+				cursor.execute(mc_sql, (major_name, course_name, category, modules))
+			else:
+				get_majors_sql = "SELECT Mname FROM Major;"
+				cursor.execute(get_majors_sql)
+				majors = cursor.fetchall()
+
+				mc_sql = "DELETE FROM MC WHERE Mname=%s AND Cname=%s AND MCcategory=%s AND MCmodules=%s;"
+				for major in majors:
+					cursor.execute(mc_sql, (major['Mname'], course_name, category, modules))
+
+			# 删除 Course 表中的记录
+			course_sql = "DELETE FROM Course WHERE Cname=%s AND Cid=%s AND Ccredit=%s;"
+			cursor.execute(course_sql, (course_name, course_id, credit))
+
+			connection.commit()
+	except pymysql.Error as e:
+		error_message = f"Error: {e}"
+		return jsonify({'status': 'error', 'message': error_message})
+	finally:
+		connection.close()
+
+	flash("删除已完成")
+
+	return jsonify({'status': 'success', 'message': 'Data deleted successfully'})
+
+
+@app.route('/delete_data', methods=['POST'])
+def delete_data():
+	data = request.get_json()
+	major_name = data.get('Mname', None)
+	course_name = data.get('Cname', None)
+	course_id = data.get('Cid', None)
+	category = data.get('MCcategory', None)
+	credit = data.get('Ccredit', None)
+	modules = data.get('MCmodules', None)
+
+	if not (course_name and course_id and category and credit and modules):
+		return jsonify({'status': 'error', 'message': 'Missing required data'})
+
+	return delete_course_data(major_name, course_name, course_id, category, credit, modules)
+
+
 if __name__ == '__main__':
 	with app.app_context():
 		db.create_all()
-	app.run(debug=True,host="0.0.0.0")
+	app.run(debug=True, host="0.0.0.0")

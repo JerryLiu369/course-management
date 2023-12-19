@@ -2,6 +2,18 @@ import pymysql.cursors
 import os
 with open(f"{os.path.dirname(os.path.abspath(__file__))}/.env", "r") as f:
     SQLALCHEMY_DATABASE_URI, HOST, USER, PASSWORD, DB = f.read().strip("\n").split("\n")
+    '''
+    print(SQLALCHEMY_DATABASE_URI)
+    print('--------------')
+    print(HOST)
+    print('--------------')
+    print(USER)
+    print('--------------')
+    print(PASSWORD)
+    print('--------------')
+    print(DB)
+    print('--------------')
+    '''
 
 def get_zhuan_courses(major_name):
     connection = pymysql.connect(
@@ -20,7 +32,8 @@ def get_zhuan_courses(major_name):
                   f"JOIN MC ON Course.Cname = MC.Cname " \
                   f"JOIN Major ON MC.Mname = Major.Mname " \
                   f"WHERE Major.Mname = '{major_name}' AND MC.MCcategory = '专业核心课';"
-            cursor.execute(sql, (major_name,))
+            # cursor.execute(sql, (major_name,))
+            cursor.execute(sql)
             result = cursor.fetchall()
 
             return result
@@ -36,7 +49,8 @@ def map_zhuan(major_name):
     for course in core_courses:
         cname = course['Cname']
         for i in range(1, 9):
-            if((course['Csemester'] >> 8-i) & 1 == 1):    # 获取课程开设的学期
+            # if((course['Csemester'] >> 8-i) & (format(1, "b")) == 1):    # 获取课程开设的学期
+            if ((int.from_bytes(course['Csemester'], byteorder='big') >> (8 - i)) & 1) == 1:
                 semester = i #第i学期
                 semester_courses[semester].append(cname)
                 break
@@ -64,12 +78,13 @@ def get_bulei_courses(major_name):
 
     try:
         with connection.cursor() as cursor:
-            # 查询专业核心课
+            # 查询部类核心课
             sql = f"SELECT Course.Cname, Course.Csemester FROM Course " \
-                  f"JOIN MC ON Course.Cid = MC.Cname " \
+                  f"JOIN MC ON Course.Cname = MC.Cname " \
                   f"JOIN Major ON MC.Mname = Major.Mname " \
                   f"WHERE Major.Mname = '{major_name}' AND MC.MCcategory = '部类核心课';"
-            cursor.execute(sql, (major_name,))
+            # cursor.execute(sql, (major_name,))
+            cursor.execute(sql)
             result = cursor.fetchall()
 
             return result
@@ -85,7 +100,8 @@ def map_bulei(major_name):
     for course in core_courses:
         cname = course['Cname']
         for i in range(1, 9):
-            if((course['Csemester'] >> 8-i) & 1 == 1):    # 获取课程开设的学期
+            # if((course['Csemester'] >> 8-i) & (format(1, "b")) == 1):    # 获取课程开设的学期
+            if ((int.from_bytes(course['Csemester'], byteorder='big') >> (8 - i)) & 1) == 1:
                 semester = i #第i学期
                 semester_courses[semester].append(cname)
                 break

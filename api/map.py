@@ -2,9 +2,9 @@ import pymysql.cursors
 import os
 try:
 	with open(f"{os.path.dirname(os.path.abspath(__file__))}/.env", "r") as f:
-		app.config['SQLALCHEMY_DATABASE_URI'], HOST, USER, PASSWORD, DB = f.read().strip("\n").split("\n")
+		SQLALCHEMY_DATABASE_URI, HOST, USER, PASSWORD, DB = f.read().strip("\n").split("\n")
 except FileNotFoundError:
-	app.config['SQLALCHEMY_DATABASE_URI'], HOST, USER, PASSWORD, DB = os.getenv("SQLALCHEMY_DATABASE_URI"),os.getenv("HOST"),os.getenv("USER"),os.getenv("PASSWORD"),os.getenv("DB")
+	SQLALCHEMY_DATABASE_URI, HOST, USER, PASSWORD, DB = os.getenv("SQLALCHEMY_DATABASE_URI"),os.getenv("HOST"),os.getenv("USER"),os.getenv("PASSWORD"),os.getenv("DB")
 
 '''
 print(SQLALCHEMY_DATABASE_URI)

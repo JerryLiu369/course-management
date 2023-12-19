@@ -3,7 +3,7 @@ import secrets
 import string
 from excel_gen import gen_excel
 
-from flask import Flask, render_template, flash, redirect, url_for, request, jsonify
+from flask import Flask, render_template, flash, redirect, url_for, request, jsonify,send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap5
 from wtforms import StringField, PasswordField, SubmitField
@@ -196,6 +196,17 @@ def add():
 def minus():
 	return render_template('minus.html')
 
+
+@app.route('/download')
+@login_required
+def download():
+	return render_template('download.html',majors=MAJORS)
+
+@app.route('/download/<major>')
+@login_required
+def download_major():
+	filepath=gen_excel(major)
+	return send_file(filepath, as_attachment=True)
 
 @app.route('/process-selection', methods=['POST'])
 @login_required

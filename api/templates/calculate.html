@@ -125,7 +125,9 @@
                             </svg>
                         </a></button>
                     <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-9 rounded-md px-3 ml-2 bg-black text-white">
-                        课程地图
+                        <a href="/download">
+                            课程地图
+                        </a>
                     </button>
                 </div>
                 <div class="flex items-center mb-4"><label class="mr-2">专业：</label><select
@@ -194,7 +196,7 @@
                 </div>
                 <div class="flex items-center space-x-2">
                     <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-9 rounded-md px-3 bg-black text-white"
-                    id="calculate-button">
+                            id="calculate-button">
                         计算学分
                     </button>
                     <span class="text-black">学分结果: <a id="score-result">0</a></span></div>
@@ -287,9 +289,9 @@
         var scores=0;
         var rows = document.querySelectorAll('tbody tr');
         rows.forEach(function(row){
-            // 获取tr中的所有td元素
-            var cells = row.querySelectorAll('td');
-            if (cells[0].querySelector("input").checked) scores+= parseInt(cells[3].innerText,10);
+                // 获取tr中的所有td元素
+                var cells = row.querySelectorAll('td');
+                if (cells[0].querySelector("input").checked) scores+= parseInt(cells[3].innerText,10);
             }
         )
         document.getElementById("score-result").innerText=scores.toString();

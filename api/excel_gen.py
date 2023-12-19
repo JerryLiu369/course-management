@@ -215,6 +215,8 @@ def gen_excel(major_name):
 
     ws.merge_cells(start_row=row_sutuo, start_column=3, end_row=row_sutuo, end_column=10)
     # 处理完成后保存表格，会在当前目录生成一个excel文件
-    wb.save(filename=f'{os.path.dirname(os.path.abspath(__file__))}/{major_name}.xlsx')
+    filename_save = f'{os.path.dirname(os.path.abspath(__file__))}/{major_name}.xlsx'
+    wb.save(filename=filename_save)
     # 关闭表格对象
     wb.close()
+    return filename_save

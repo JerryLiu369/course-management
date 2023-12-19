@@ -204,7 +204,7 @@ def download():
 
 @app.route('/download/<major>')
 @login_required
-def download_major():
+def download_major(major):
 	filepath=gen_excel(major)
 	return send_file(filepath, as_attachment=True)
 

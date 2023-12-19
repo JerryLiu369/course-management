@@ -5,7 +5,6 @@ from openpyxl.styles import PatternFill
 from openpyxl.styles import GradientFill
 from openpyxl.styles import Side, Border
 from map import *
-import os
 
 '''
 map 获取具体部类核心课，专业核心课

@@ -1,14 +1,14 @@
-from flask import Flask, jsonify
 import pymysql.cursors
-
-app = Flask(__name__)
+import os
+with open(f"{os.path.dirname(os.path.abspath(__file__))}/.env", "r") as f:
+    SQLALCHEMY_DATABASE_URI, HOST, USER, PASSWORD, DB = f.read().strip("\n").split("\n")
 
 def get_zhuan_courses(major_name):
     connection = pymysql.connect(
-        host='your_database_host',
-        user='your_database_user',
-        password='your_database_password',
-        db='your_database_name',
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        db=DB,
         charset='utf8mb4',
         cursorclass=pymysql.cursors.DictCursor
     )
@@ -54,10 +54,10 @@ def map_zhuan(major_name):
 
 def get_bulei_courses(major_name):
     connection = pymysql.connect(
-        host='your_database_host',
-        user='your_database_user',
-        password='your_database_password',
-        db='your_database_name',
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        db=DB,
         charset='utf8mb4',
         cursorclass=pymysql.cursors.DictCursor
     )
@@ -99,6 +99,3 @@ def map_bulei(major_name):
         table2.append(semester_courses[i])
 
     return max1,table2
-
-if __name__ == '__main__':
-    app.run(debug=True)

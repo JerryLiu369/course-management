@@ -100,49 +100,76 @@ class MC(db.Model):
 	MCmodules = db.Column('MCmodules', db.String(20), doc='课程模块', nullable=True)
 
 
-ALLMODULES = [
-	{'name': '通识模块',
-	 'categories': [
-		 {'name': '专业实习', 'modules': []},
-		 {'name': '公共体育', 'modules': ['专项基础课', '核心基础课']},
-		 {'name': '公共外语',
-		  'modules': ['实验班', '实验班第二外语', '拓展类课程', '普通班A级', '普通班B级', '英语演讲']},
-		 {'name': '军事课', 'modules': []},
-		 {'name': '劳动教育', 'modules': []},
-		 {'name': '志愿服务', 'modules': []},
-		 {'name': '思想政治理论课', 'modules': ['必修模块', '选修模块']},
-		 {'name': '毕业论文（设计）', 'modules': []},
-		 {'name': '研究训练', 'modules': []},
-		 {'name': '职业生涯规划', 'modules': []},
-		 {'name': '通识课程群', 'modules': ['公共艺术教育', '心理健康教育选修', '新生研讨课']}
-	 ]
-	 },
-	{'name': '专业模块',
-	 'categories': [
-		 {'name': '部类核心课', 'modules': ['部类共同课', '部类基础课']},
-		 {'name': '专业核心课', 'modules': []},
-		 {'name': '个性化选修',
-		  'modules': ['人工智能', '信息安全应用', '信息安全技术', '信息管理理论基础', '信息系统技术基础',
-		              '复杂工程实践', '多媒体技术', '大数据技术', '电子商务创新应用', '系统与网络', '计算机理论基础',
-		              '计算机类专业实践', '软件工程与系统开发', '金融科技创新应用']}
-	 ]
-	 }
-]
+ALLMODULES = []
 
 MAJORS = ["计算机科学与技术", "信息管理与信息系统", "信息安全", "软件工程", "数据科学与大数据技术（工学）"]
 
 app.course_list = []
 
 
+def update_all_modules():
+	mysql_config = {
+		'host': HOST,
+		'user': USER,
+		'password': PASSWORD,
+		'db': DB,
+		'cursorclass': pymysql.cursors.DictCursor
+	}
+
+
+	try:
+		# 创建 MySQL 连接
+		conn = pymysql.connect(**mysql_config)
+		cursor = conn.cursor()
+
+		# 查询 MC 表数据
+		query = """
+				SELECT MCcategory, GROUP_CONCAT(DISTINCT MCmodules) AS MCmodules
+				FROM MC
+				GROUP BY MCcategory;
+			"""
+
+		cursor.execute(query)
+		result = cursor.fetchall()
+
+		# 将结果转换为字典格式
+		data = [{'name': '通识模块', 'categories': []}, {'name': '专业模块', 'categories': []}]
+
+		# 将特定的 MCcategory 值映射到专业模块或通识模块中
+		for item in result:
+			module = {'name': item['MCcategory'], 'modules': item['MCmodules'].split(',') if item['MCmodules'] else []}
+
+			if item['MCcategory'] in ['部类核心课', '专业核心课', '个性化选修']:
+				data[1]['categories'].append(module)
+			else:
+				data[0]['categories'].append(module)
+
+		return data
+
+	except Exception as e:
+		print(f"Error: {e}")
+		return None
+
+	finally:
+		# 关闭连接
+		cursor.close()
+		conn.close()
+
+
+
 @app.route('/')
 @login_required
 def index():
+	global ALLMODULES
+	ALLMODULES=update_all_modules()
 	return redirect(url_for('general'))
 
 
 @app.route('/general')
 @login_required
 def general():
+	global ALLMODULES
+	ALLMODULES=update_all_modules()
 	return render_template('general.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
 
 

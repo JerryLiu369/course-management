@@ -27,7 +27,6 @@ def get_zhuan_courses(major_name):
     finally:
         connection.close()
 
-@app.route('/map_zhuan/<major_name>', methods=['GET'])
 def map_zhuan(major_name):
     core_courses = get_zhuan_courses(major_name)
 
@@ -77,7 +76,6 @@ def get_bulei_courses(major_name):
     finally:
         connection.close()
 
-@app.route('/map_zhuan/<major_name>', methods=['GET'])
 def map_bulei(major_name):
     core_courses = get_bulei_courses(major_name)
 

@@ -1,6 +1,7 @@
 import os
 import secrets
 import string
+from excel_gen import gen_excel
 
 from flask import Flask, render_template, flash, redirect, url_for, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -10,6 +11,7 @@ from wtforms.validators import InputRequired
 from flask_wtf import FlaskForm
 from flask_login import LoginManager, UserMixin, login_user, login_required
 import pymysql
+import os
 
 
 def generate_secure_string(length):
@@ -20,8 +22,8 @@ def generate_secure_string(length):
 app = Flask(__name__)
 app.secret_key = generate_secure_string(30)
 app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'litera'
-with open("./.env", "r") as f:
-	app.config['SQLALCHEMY_DATABASE_URI'] = f.read().strip("\n")
+with open(f"{os.path.dirname(os.path.abspath(__file__))}/.env", "r") as f:
+	app.config['SQLALCHEMY_DATABASE_URI'], HOST, USER, PASSWORD, DB = f.read().strip("\n").split("\n")
 bootstrap = Bootstrap5(app)
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -224,10 +226,10 @@ def calculate_credits():
 
 def insert_course_data(major_name, course_name, course_id, category, credit, modules):
 	connection = pymysql.connect(
-		host='your_database_host',
-		user='your_database_user',
-		password='your_database_password',
-		db='your_database_name',
+		host=HOST,
+		user=USER,
+		password=PASSWORD,
+		db=DB,
 		charset='utf8mb4',
 		cursorclass=pymysql.cursors.DictCursor
 	)
@@ -283,10 +285,10 @@ def insert_data():
 
 def delete_course_data(major_name, course_name, course_id, category, credit, modules):
 	connection = pymysql.connect(
-		host='your_database_host',
-		user='your_database_user',
-		password='your_database_password',
-		db='your_database_name',
+		host=HOST,
+		user=USER,
+		password=PASSWORD,
+		db=DB,
 		charset='utf8mb4',
 		cursorclass=pymysql.cursors.DictCursor
 	)

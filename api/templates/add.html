@@ -124,6 +124,19 @@
                         id="info4" placeholder=""/></div>
                 <div class="flex items-center space-x-2"><label
                         class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-20 text-right"
+                        for="semesters">课程学期</label>
+                    <div class="flex justify-between h-10 w-full border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 rounded-md"
+                         id="semesters">
+                        {% for number in range(1, 9) %}
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" value="{{number}}" class="number-checkbox rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <span class="text-sm">{{number}}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2"><label
+                        class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-20 text-right"
                         for="info5">模块小类</label><input
                         class="flex h-10 w-full border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 rounded-md"
                         id="info5" placeholder=""/></div>
@@ -143,6 +156,9 @@
         var info3 = document.getElementById("info3");
         var info4 = document.getElementById("info4");
         var info5 = document.getElementById("info5");
+        const checkboxes = document.querySelectorAll('#semesters .number-checkbox');
+        let semesters = Array.from(checkboxes).filter(c => c.checked).map(c => parseInt(c.value));
+
 
         fetch('/insert_data', {
             method: 'POST',
@@ -155,7 +171,8 @@
                 Cid:info2.value,
                 MCcategory:info3.value,
                 Ccredit:info4.value,
-                MCmodules:info5.value
+                MCmodules:info5.value,
+                semesters:semesters
             })
         }).then(data => {
             console.log(data);

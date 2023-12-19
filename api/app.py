@@ -216,11 +216,11 @@ def process_selection():
 	category = data['category']
 	module = data['module']
 	base_query = (db.session.query(Course.Cname, Course.Cid, Course.Ccredit, Course.Csemester, MC.MCmodules)
-	              .join(MC, Course.Cname == MC.Cname)
-	              .join(Major, MC.Mname == Major.Mname)
-	              .filter(MC.MCcategory == category)
-	              .distinct()
-	              )
+				  .join(MC, Course.Cname == MC.Cname)
+				  .join(Major, MC.Mname == Major.Mname)
+				  .filter(MC.MCcategory == category)
+				  .distinct()
+				  )
 	# 动态添加过滤条件
 	if major_input:
 		base_query = base_query.filter(Major.Mname == major_input)
@@ -229,37 +229,6 @@ def process_selection():
 	# 执行查询
 	app.course_list = base_query.all()
 	return "success"
-
-
-@app.route('/calculate-credits', methods=['POST'])
-@login_required
-def calculate_credits():
-	data = request.get_json()
-	# 读入专业，所选模块，以及选中模块内的课程
-	major = data['major']
-	module = data['module']
-	category = data['category']  # 类别列表，可能有多个列表
-	selected_courses = data['courses']  # 课程列表，可能有多个课程
-
-	base_query = (db.session.query(Course.Cname, Course.Ccredit)
-	              .join(MC, Course.Cname == MC.Cname)
-	              .join(Major, MC.Mname == Major.Mname)
-	              .filter(MC.MCcategory == category)
-	              .filter(Major.Mname == major)
-	              .filter(MC.MCmodules == module)
-	              .distinct()
-	              )
-
-	# 过滤出选择的课程
-	base_query = base_query.filter(Course.Cname.in_(selected_courses))
-
-	# 执行查询，获取课程和对应的学分
-	course_credits = base_query.all()
-
-	# 计算学分总和
-	total_credits = sum(credit for _, credit in course_credits)
-
-	return str(total_credits)
 
 
 def insert_course_data(major_name, course_name, course_id, category, credit, modules):
@@ -300,10 +269,7 @@ def insert_course_data(major_name, course_name, course_id, category, credit, mod
 	finally:
 		connection.close()
 
-	flash("增加已完成")
-
 	return jsonify({'status': 'success', 'message': 'Data inserted successfully'})
-
 
 @app.route('/insert_data', methods=['POST'])
 def insert_data():
@@ -357,10 +323,7 @@ def delete_course_data(major_name, course_name, course_id, category, credit, mod
 	finally:
 		connection.close()
 
-	flash("删除已完成")
-
 	return jsonify({'status': 'success', 'message': 'Data deleted successfully'})
-
 
 @app.route('/delete_data', methods=['POST'])
 def delete_data():

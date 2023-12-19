@@ -95,9 +95,13 @@
             <main class="flex flex-col gap-4 mt-0">
                 <div class="flex items-center space-x-2"><label
                         class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-20 text-right"
-                        for="info">专业</label><input
-                        class="flex h-10 w-full border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 rounded-md"
-                        id="info" placeholder="专业课程请填写此栏"/></div>
+                        for="info">专业：（仅专业课程选择）</label><select
+                        class="border rounded px-2 py-1 mr-4" id="info">
+                    <option value="">不选择专业</option>
+                    {% for major in majors %}
+                    <option value="{{major}}">{{major}}</option>
+                    {% endfor %}
+                </select></div>
                 <div class="flex items-center space-x-2"><label
                         class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 w-20 text-right"
                         for="info1">课程名称</label><input
@@ -146,7 +150,7 @@
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                Mname:info,
+                Mname:info.value,
                 Cname:info1,
                 Cid:info2,
                 Mccategory:info3,

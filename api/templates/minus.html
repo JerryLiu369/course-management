@@ -151,11 +151,11 @@
             },
             body: JSON.stringify({
                 Mname:info.value,
-                Cname:info1,
-                Cid:info2,
-                Mccategory:info3,
-                Ccredit:info4,
-                MCmodules:info5
+                Cname:info1.value,
+                Cid:info2.value,
+                MCcategory:info3.value,
+                Ccredit:info4.value,
+                MCmodules:info5.value
             })
         }).then(data => {
             console.log(data.json());

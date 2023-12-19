@@ -100,7 +100,6 @@ class MC(db.Model):
 	MCmodules = db.Column('MCmodules', db.String(20), doc='课程模块', nullable=True)
 
 
-ALLMODULES = []
 
 MAJORS = ["计算机科学与技术", "信息管理与信息系统", "信息安全", "软件工程", "数据科学与大数据技术（工学）"]
 
@@ -155,7 +154,7 @@ def update_all_modules():
 		cursor.close()
 		conn.close()
 
-
+ALLMODULES = update_all_modules()
 
 @app.route('/')
 @login_required
@@ -168,7 +167,6 @@ def index():
 @app.route('/general')
 @login_required
 def general():
-	global ALLMODULES
 	ALLMODULES=update_all_modules()
 	return render_template('general.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
 
@@ -176,12 +174,14 @@ def general():
 @app.route('/major')
 @login_required
 def major():
+	ALLMODULES=update_all_modules()
 	return render_template('major.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
 
 
 @app.route('/calculate')
 @login_required
 def calculate():
+	ALLMODULES=update_all_modules()
 	return render_template('calculate.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
 
 

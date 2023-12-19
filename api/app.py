@@ -3,7 +3,7 @@ import secrets
 import string
 from excel_gen import gen_excel
 
-from flask import Flask, render_template, flash, redirect, url_for, request, jsonify,send_file
+from flask import Flask, render_template, flash, redirect, url_for, request, jsonify, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap5
 from wtforms import StringField, PasswordField, SubmitField
@@ -100,7 +100,6 @@ class MC(db.Model):
 	MCmodules = db.Column('MCmodules', db.String(20), doc='课程模块', nullable=True)
 
 
-
 MAJORS = ["计算机科学与技术", "信息管理与信息系统", "信息安全", "软件工程", "数据科学与大数据技术（工学）"]
 
 app.course_list = []
@@ -114,7 +113,6 @@ def update_all_modules():
 		'db': DB,
 		'cursorclass': pymysql.cursors.DictCursor
 	}
-
 
 	try:
 		# 创建 MySQL 连接
@@ -154,59 +152,63 @@ def update_all_modules():
 		cursor.close()
 		conn.close()
 
+
 ALLMODULES = update_all_modules()
+
 
 @app.route('/')
 @login_required
 def index():
 	global ALLMODULES
-	ALLMODULES=update_all_modules()
+	ALLMODULES = update_all_modules()
 	return redirect(url_for('general'))
 
 
 @app.route('/general')
 @login_required
 def general():
-	ALLMODULES=update_all_modules()
+	ALLMODULES = update_all_modules()
 	return render_template('general.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
 
 
 @app.route('/major')
 @login_required
 def major():
-	ALLMODULES=update_all_modules()
+	ALLMODULES = update_all_modules()
 	return render_template('major.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
 
 
 @app.route('/calculate')
 @login_required
 def calculate():
-	ALLMODULES=update_all_modules()
+	ALLMODULES = update_all_modules()
 	return render_template('calculate.html', majors=MAJORS, allmodules=ALLMODULES, data=app.course_list)
 
 
 @app.route('/add')
 @login_required
 def add():
-	return render_template('add.html',majors=MAJORS)
+	return render_template('add.html', majors=MAJORS)
 
 
 @app.route('/minus')
 @login_required
 def minus():
-	return render_template('minus.html',majors=MAJORS)
+	return render_template('minus.html', majors=MAJORS)
 
 
 @app.route('/download')
 @login_required
 def download():
-	return render_template('download.html',majors=MAJORS)
+	return render_template('download.html', majors=MAJORS)
+
 
 @app.route('/download/<major>')
 @login_required
 def download_major(major):
-	filepath=gen_excel(major)
+	filepath = gen_excel(major)
 	return send_file(filepath, as_attachment=True)
+
 
 @app.route('/process-selection', methods=['POST'])
 @login_required
@@ -216,11 +218,11 @@ def process_selection():
 	category = data['category']
 	module = data['module']
 	base_query = (db.session.query(Course.Cname, Course.Cid, Course.Ccredit, Course.Csemester, MC.MCmodules)
-				  .join(MC, Course.Cname == MC.Cname)
-				  .join(Major, MC.Mname == Major.Mname)
-				  .filter(MC.MCcategory == category)
-				  .distinct()
-				  )
+	              .join(MC, Course.Cname == MC.Cname)
+	              .join(Major, MC.Mname == Major.Mname)
+	              .filter(MC.MCcategory == category)
+	              .distinct()
+	              )
 	# 动态添加过滤条件
 	if major_input:
 		base_query = base_query.filter(Major.Mname == major_input)
@@ -231,7 +233,7 @@ def process_selection():
 	return "success"
 
 
-def insert_course_data(major_name, course_name, course_id, category, credit, modules):
+def insert_course_data(major_name, course_name, course_id, category, credit, binary_semesters, modules):
 	connection = pymysql.connect(
 		host=HOST,
 		user=USER,
@@ -244,8 +246,8 @@ def insert_course_data(major_name, course_name, course_id, category, credit, mod
 	try:
 		with connection.cursor() as cursor:
 			# 尝试插入 Course 表
-			course_sql = "INSERT INTO Course (Cname, Cid, Ccredit) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE Cid=Cid;"
-			cursor.execute(course_sql, (course_name, course_id, credit))
+			course_sql = "INSERT INTO Course (Cname, Cid, Ccredit, Csemester) VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE Cid=Cid;"
+			cursor.execute(course_sql, (course_name, course_id, credit, bytes.fromhex(binary_semesters)))
 
 			# 尝试插入 MC 表
 			if major_name:
@@ -271,6 +273,22 @@ def insert_course_data(major_name, course_name, course_id, category, credit, mod
 
 	return jsonify({'status': 'success', 'message': 'Data inserted successfully'})
 
+
+def set_bit(binary_string, position):
+	# 将字符串的指定位置设为1
+	return binary_string[:-(position + 1)] + '1' + binary_string[-position:]
+
+
+def semesters_to_binary(semesters):
+	# 初始化一个8位的二进制字符串，全部置为0
+	binary_representation = '00000000'
+	if semesters:
+		for semester in semesters:
+			# 将对应学期的位设为1
+			binary_representation = set_bit(binary_representation, semester - 1)
+	return hex(int(binary_representation, 2))[2:]
+
+
 @app.route('/insert_data', methods=['POST'])
 def insert_data():
 	data = request.get_json()
@@ -279,12 +297,14 @@ def insert_data():
 	course_id = data.get('Cid', None)
 	category = data.get('MCcategory', None)
 	credit = data.get('Ccredit', None)
+	semesters = data.get('semesters', [])
 	modules = data.get('MCmodules', None)
 
-	if not (course_name and course_id and category and credit):
+	if not (course_name and course_id and category and credit and semesters):
 		return jsonify({'status': 'error', 'message': 'Missing required data'})
 
-	return insert_course_data(major_name, course_name, course_id, category, credit, modules)
+	binary_semesters = semesters_to_binary(semesters)
+	return insert_course_data(major_name, course_name, course_id, category, credit, binary_semesters, modules)
 
 
 def delete_course_data(major_name, course_name, course_id, category, credit, modules):
@@ -324,6 +344,7 @@ def delete_course_data(major_name, course_name, course_id, category, credit, mod
 		connection.close()
 
 	return jsonify({'status': 'success', 'message': 'Data deleted successfully'})
+
 
 @app.route('/delete_data', methods=['POST'])
 def delete_data():

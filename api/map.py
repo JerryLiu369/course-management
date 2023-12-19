@@ -1,19 +1,23 @@
 import pymysql.cursors
 import os
-with open(f"{os.path.dirname(os.path.abspath(__file__))}/.env", "r") as f:
-    SQLALCHEMY_DATABASE_URI, HOST, USER, PASSWORD, DB = f.read().strip("\n").split("\n")
-    '''
-    print(SQLALCHEMY_DATABASE_URI)
-    print('--------------')
-    print(HOST)
-    print('--------------')
-    print(USER)
-    print('--------------')
-    print(PASSWORD)
-    print('--------------')
-    print(DB)
-    print('--------------')
-    '''
+try:
+	with open(f"{os.path.dirname(os.path.abspath(__file__))}/.env", "r") as f:
+		app.config['SQLALCHEMY_DATABASE_URI'], HOST, USER, PASSWORD, DB = f.read().strip("\n").split("\n")
+except FileNotFoundError:
+	app.config['SQLALCHEMY_DATABASE_URI'], HOST, USER, PASSWORD, DB = os.getenv("SQLALCHEMY_DATABASE_URI"),os.getenv("HOST"),os.getenv("USER"),os.getenv("PASSWORD"),os.getenv("DB")
+
+'''
+print(SQLALCHEMY_DATABASE_URI)
+print('--------------')
+print(HOST)
+print('--------------')
+print(USER)
+print('--------------')
+print(PASSWORD)
+print('--------------')
+print(DB)
+print('--------------')
+'''
 
 def get_zhuan_courses(major_name):
     connection = pymysql.connect(

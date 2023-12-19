@@ -281,7 +281,7 @@ def insert_data():
 	credit = data.get('Ccredit', None)
 	modules = data.get('MCmodules', None)
 
-	if not (course_name and course_id and category and credit and modules):
+	if not (course_name and course_id and category and credit):
 		return jsonify({'status': 'error', 'message': 'Missing required data'})
 
 	return insert_course_data(major_name, course_name, course_id, category, credit, modules)
@@ -335,7 +335,7 @@ def delete_data():
 	credit = data.get('Ccredit', None)
 	modules = data.get('MCmodules', None)
 
-	if not (course_name and course_id and category and credit and modules):
+	if not (course_name and course_id and category and credit):
 		return jsonify({'status': 'error', 'message': 'Missing required data'})
 
 	return delete_course_data(major_name, course_name, course_id, category, credit, modules)

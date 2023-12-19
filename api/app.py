@@ -22,8 +22,11 @@ def generate_secure_string(length):
 app = Flask(__name__)
 app.secret_key = generate_secure_string(30)
 app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'litera'
-with open(f"{os.path.dirname(os.path.abspath(__file__))}/.env", "r") as f:
-	app.config['SQLALCHEMY_DATABASE_URI'], HOST, USER, PASSWORD, DB = f.read().strip("\n").split("\n")
+try:
+	with open(f"{os.path.dirname(os.path.abspath(__file__))}/.env", "r") as f:
+		app.config['SQLALCHEMY_DATABASE_URI'], HOST, USER, PASSWORD, DB = f.read().strip("\n").split("\n")
+except FileNotFoundError:
+	app.config['SQLALCHEMY_DATABASE_URI'], HOST, USER, PASSWORD, DB = os.getenv("SQLALCHEMY_DATABASE_URI"),os.getenv("HOST"),os.getenv("USER"),os.getenv("PASSWORD"),os.getenv("DB")
 bootstrap = Bootstrap5(app)
 db = SQLAlchemy(app)
 login_manager = LoginManager()

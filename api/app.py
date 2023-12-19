@@ -1,7 +1,7 @@
 import os
 import secrets
 import string
-from excel_gen import gen_excel
+from .excel_gen import gen_excel
 
 from flask import Flask, render_template, flash, redirect, url_for, request, jsonify, send_file
 from flask_sqlalchemy import SQLAlchemy

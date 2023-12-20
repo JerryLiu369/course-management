@@ -274,6 +274,7 @@ def insert_course_data(major_name, course_name, course_id, category, credit, bin
 	finally:
 		connection.close()
 
+	flash("加课成功")
 	return jsonify({'status': 'success', 'message': 'Data inserted successfully'})
 
 
@@ -341,6 +342,7 @@ def delete_course_data(major_name, course_name, course_id, category, credit, mod
 	finally:
 		connection.close()
 
+	flash("成功删除课程")
 	return jsonify({'status': 'success', 'message': 'Data deleted successfully'})
 
 

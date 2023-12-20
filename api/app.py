@@ -277,19 +277,14 @@ def insert_course_data(major_name, course_name, course_id, category, credit, bin
 	return jsonify({'status': 'success', 'message': 'Data inserted successfully'})
 
 
-def set_bit(binary_string, position):
-	# 将字符串的指定位置设为1
-	return binary_string[:-(position + 1)] + '1' + binary_string[-position:]
-
-
 def semesters_to_binary(semesters):
 	# 初始化一个8位的二进制字符串，全部置为0
-	binary_representation = '00000000'
+	binary_representation =['0']*8
 	if semesters:
 		for semester in semesters:
 			# 将对应学期的位设为1
-			binary_representation = set_bit(binary_representation, semester - 1)
-	return hex(int(binary_representation, 2))[2:]
+			binary_representation[semester-1]='1'
+	return hex(int(''.join(binary_representation), 2))[2:]
 
 
 @app.route('/insert_data', methods=['POST'])

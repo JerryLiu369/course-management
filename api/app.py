@@ -270,13 +270,13 @@ def insert_course_data(major_name, course_name, course_id, category, credit, bin
 			connection.commit()
 	except pymysql.Error as e:
 		error_message = f"Error: {e}"
-		flash("添加课程成功")
+		flash("添加课程成功（请刷新重试）")
 		flash(str(error_message))
 		return jsonify({'status': 'error', 'message': error_message})
 	finally:
 		connection.close()
 
-	flash("成功添加课程")
+	flash("成功添加课程（请刷新重试）")
 	return jsonify({'status': 'success', 'message': 'Data inserted successfully'})
 
 
@@ -302,7 +302,7 @@ def insert_data():
 	modules = data.get('MCmodules', None)
 
 	if not (course_name and course_id and category and credit and semesters):
-		flash("缺少课程信息")
+		flash("缺少课程信息（请刷新重试）")
 		return jsonify({'status': 'error', 'message': 'Missing required data'})
 
 	binary_semesters = semesters_to_binary(semesters)
@@ -341,13 +341,13 @@ def delete_course_data(major_name, course_name, course_id, category, credit, mod
 			connection.commit()
 	except pymysql.Error as e:
 		error_message = f"Error: {e}"
-		flash("删除课程失败")
+		flash("删除课程失败（请刷新重试）")
 		flash(str(error_message))
 		return jsonify({'status': 'error', 'message': error_message})
 	finally:
 		connection.close()
 
-	flash("成功删除课程")
+	flash("成功删除课程（请刷新重试）")
 	return jsonify({'status': 'success', 'message': 'Data deleted successfully'})
 
 
@@ -362,7 +362,7 @@ def delete_data():
 	modules = data.get('MCmodules', None)
 
 	if not (course_name and course_id and category and credit):
-		flash("缺少课程信息")
+		flash("缺少课程信息（请刷新重试）")
 		return jsonify({'status': 'error', 'message': 'Missing required data'})
 
 	return delete_course_data(major_name, course_name, course_id, category, credit, modules)

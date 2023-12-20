@@ -46,9 +46,9 @@ def load_user(user_id):
 
 
 class LoginForm(FlaskForm):
-	username = StringField('Username', validators=[InputRequired()])
-	password = PasswordField('Password', validators=[InputRequired()])
-	submit = SubmitField('Login')
+	username = StringField('用户名', validators=[InputRequired()])
+	password = PasswordField('密码', validators=[InputRequired()])
+	submit = SubmitField('登录')
 
 
 @app.route('/login', methods=['GET', 'POST'])

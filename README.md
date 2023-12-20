@@ -24,13 +24,9 @@
 
 ```
 SQLALCHEMY_DATABASE_URI
-
 HOST
-
 USER
-
 PASSWORD
-
 DB
 ```
 
